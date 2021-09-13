@@ -24,7 +24,7 @@ const char SET_HI_COL = 0x10; // page addressing mode only
 const char SET_MEM_MODE =
     0x20; // 2 bytes; 0b - horizontal;  1b - vertical; 10b page addressing mode
 const char SET_COL_ADDR = 0x21;   // 3 bytes; 0 - 127d start; 0 - 127d end
-const char SET_PAGE_ADDR = 0x21;  // 3 bytes; 0 - 7d start; 0 - 7d end
+const char SET_PAGE_ADDR = 0x22;  // 3 bytes; 0 - 7d start; 0 - 7d end
 const char SET_PAGE_START = 0xB0; // | 0-7d page addressing mode
 
 /* hardware configuration command table */
