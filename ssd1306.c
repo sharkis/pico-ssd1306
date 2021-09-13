@@ -33,6 +33,13 @@ const char SET_SEG_REMAP =
     0xA0; // | 0 - col 0 map to seg0; 1 - col 127 mapped to seg0
 const char SET_MULTIPLEX_RATIO = 0xA8; // 2 bytes; 15-63
 
+
+
+const uint8_t DISPLAY_RESET[] = {COMMAND_BYTE, 0x21, COMMAND_BYTE, 0x0,
+                                 COMMAND_BYTE, 0x7f, COMMAND_BYTE, 0x22,
+                                 COMMAND_BYTE, 0x0,  COMMAND_BYTE, 0x7,
+                                 DATA_BYTE};
+
 void send_cmd(uint8_t data[], size_t len) {
   uint8_t *outdata = malloc(len * sizeof(uint8_t) * 2);
   for (int i = 0; i < len; i++) {
@@ -61,7 +68,3 @@ uint8_t DISPLAY_INIT[25] = {0xAE, 0x20, 0x00, 0x40, 0xA1, 0xA8, 0x3F,
                             0xD9, 0xF1, 0xDB, 0x30, 0x81, 0xFF, 0xA4,
                             0xA6, 0x8D, 0x14, 0xAF};
 
-const uint8_t DISPLAY_RESET[] = {COMMAND_BYTE, 0x21, COMMAND_BYTE, 0x0,
-                                 COMMAND_BYTE, 0x7f, COMMAND_BYTE, 0x22,
-                                 COMMAND_BYTE, 0x0,  COMMAND_BYTE, 0x7,
-                                 DATA_BYTE};
