@@ -33,30 +33,24 @@ const char SET_SEG_REMAP =
     0xA0; // | 0 - col 0 map to seg0; 1 - col 127 mapped to seg0
 const char SET_MULTIPLEX_RATIO = 0xA8; // 2 bytes; 15-63
 
-
-
-const uint8_t DISPLAY_RESET[] = {COMMAND_BYTE, 0x21, COMMAND_BYTE, 0x0,
-                                 COMMAND_BYTE, 0x7f, COMMAND_BYTE, 0x22,
-                                 COMMAND_BYTE, 0x0,  COMMAND_BYTE, 0x7,
-                                 DATA_BYTE};
+const uint8_t DISPLAY_RESET[] = {0x00, 0x21, 0x0, 0x7f, 0x22, 0x0, 0x7};
 
 void send_cmd(uint8_t data[], size_t len) {
-  uint8_t *outdata = malloc(len * sizeof(uint8_t) * 2);
-  for (int i = 0; i < len; i++) {
-    outdata[i * 2] = COMMAND_BYTE;
-    outdata[(i * 2) + 1] = data[i];
-  }
-  i2c_write_blocking(i2c_default, OLED_ID, outdata, 2 * len, false);
+  uint8_t *outdata = malloc(len + 1);
+  outdata[0] = 0x00;
+  memcpy(outdata + 1, data, len);
+  i2c_write_blocking(i2c_default, OLED_ID, outdata, len + 1, false);
   free(outdata);
 }
 
 void send_data(uint8_t data[8][128]) {
-  int outsize = 8 * 128 + 13;
+  int outsize = 8 * 128 + 1;
   uint8_t *outdata = malloc(outsize);
-  memcpy(outdata, DISPLAY_RESET, 13);
+  i2c_write_blocking(i2c_default, OLED_ID, DISPLAY_RESET, 7, false);
+  outdata[0] = DATA_BYTE;
   for (int i = 0; i < 8; i++) {
     for (int k = 0; k < 128; k++) {
-      outdata[13 + (i * 128) + k] = data[i][k];
+      outdata[1 + (i * 128) + k] = data[i][k];
     }
   }
   i2c_write_blocking(i2c_default, OLED_ID, outdata, outsize, false);
@@ -67,4 +61,3 @@ uint8_t DISPLAY_INIT[25] = {0xAE, 0x20, 0x00, 0x40, 0xA1, 0xA8, 0x3F,
                             0xC8, 0xD3, 0x00, 0xDA, 0x12, 0xD5, 0x80,
                             0xD9, 0xF1, 0xDB, 0x30, 0x81, 0xFF, 0xA4,
                             0xA6, 0x8D, 0x14, 0xAF};
-
